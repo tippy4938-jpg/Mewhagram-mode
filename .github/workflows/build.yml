@@ -27,7 +27,7 @@ jobs:
 
       - name: Clone Telegram-FOSS
         run: |
-          git clone --depth 1 https://github.com/Telegram-FOSS/Telegram-FOSS.git telegram
+          git clone --depth 1 https://github.com/Telegram-FOSS-Team/Telegram-FOSS.git telegram
           cd telegram
           git submodule update --init --recursive --depth 1
 
