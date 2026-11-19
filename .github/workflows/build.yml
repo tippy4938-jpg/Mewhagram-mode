@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Mewhagram Repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -20,6 +20,11 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
       - name: Clone Telegram-FOSS
         run: |
           git clone --depth 1 https://github.com/Telegram-FOSS/Telegram-FOSS.git telegram
@@ -28,18 +33,7 @@ jobs:
 
       - name: Apply Mewhagram Modifications
         run: |
-          cd telegram
-          echo "Applying Mewhagram branding and features..."
-
-          # 1. Меняем название на Mewhagram в ресурсах
-          sed -i 's/<string name="AppName">Telegram<\/string>/<string name="AppName">Mewhagram<\/string>/g' TMessagesProj/src/main/res/values/strings.xml
-          sed -i 's/<string name="AppName">Telegram<\/string>/<string name="AppName">Mewhagram<\/string>/g' TMessagesProj/src/main/res/values-ru/strings.xml
-
-          # 2. Точное время с секундами в сообщениях и Last Seen (HH:mm:ss)
-          find TMessagesProj/src/main/java -name "LocaleController.java" -exec sed -i 's/"HH:mm"/"HH:mm:ss"/g' {} +
-
-          # 3. Локальный Telegram Premium (возвращает true для isPremium)
-          find TMessagesProj/src/main/java -name "UserConfig.java" -exec sed -i 's/public boolean isPremium() {/public boolean isPremium() { return true;/g' {} +
+          python3 apply_mewha_patches.py telegram
 
       - name: Build APK with Gradle
         run: |
